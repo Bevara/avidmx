@@ -1,0 +1,13 @@
+{
+    "name": "avidmx",
+    "description": "AVI demultiplexer",
+    "filters":["avidmx"],
+    "help": "This filter demultiplexes AVI.",
+    "support": [
+        "video"
+    ],
+    "sources":"https://codeload.github.com/Bevara/avidmx/zip/refs/heads/main",
+    "filter_source":{
+        "avidmx" : "dmx_avi.c"
+    }
+}
