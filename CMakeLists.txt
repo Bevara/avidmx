@@ -11,6 +11,8 @@ SET(AVIDMX_LIB
 
 SET(AVIDMX_SRC
         ${CMAKE_CURRENT_SOURCE_DIR}/dmx_avi.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/avilib.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/media_import.c
 )
 
 SET(AVIDMX_INCLUDE
