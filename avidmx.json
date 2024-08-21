@@ -9,5 +9,6 @@
     "sources":"https://codeload.github.com/Bevara/avidmx/zip/refs/heads/main",
     "filter_source":{
         "avidmx" : "dmx_avi.c"
-    }
+    },
+    "licence_required":false
 }
