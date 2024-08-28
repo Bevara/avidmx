@@ -10,5 +10,6 @@
     "filter_source":{
         "avidmx" : "dmx_avi.c"
     },
+    "Format":	["AVI"],
     "licence_required":false
 }
