@@ -745,3 +745,8 @@ const GF_FilterRegister * EMSCRIPTEN_KEEPALIVE dynCall_avidmx_register(GF_Filter
 	return NULL;
 #endif
 }
+#include "filter_register.h"
+__attribute__((constructor))
+void register_avidmx(void) {
+    gf_filter_auto_register("avidmx", dynCall_avidmx_register);
+}
