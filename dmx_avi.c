@@ -128,6 +128,21 @@ static void avidmx_setup(GF_Filter *filter, GF_AVIDmxCtx *ctx)
 		graph recognises it: the JPEGs traverse the session undecoded.*/
 		codecid = GF_CODECID_JPEG;
 		unframed = GF_FALSE;
+	} else if ( !stricmp(comp, "H261") || !stricmp(comp, "M261") ) {
+		/*H.261 predates everything GPAC muxes and has no codec ID of its own,
+		so the four character code is used directly; ffmpeg-h26x maps the same
+		value back to AV_CODEC_ID_H261. Spelling it out here rather than
+		letting gf_4cc_parse below do it keeps the case of the fourcc from
+		mattering - writers use both H261 and h261.*/
+		codecid = GF_4CC('h','2','6','1');
+		unframed = GF_FALSE;
+	} else if ( !stricmp(comp, "H263") || !stricmp(comp, "S263")
+		|| !stricmp(comp, "U263")		/*UB Video*/
+		|| !stricmp(comp, "M263")		/*Microsoft*/
+		|| !stricmp(comp, "L263")		/*Lead*/
+	) {
+		codecid = GF_CODECID_H263;
+		unframed = GF_FALSE;
 	} else if (!stricmp(comp, "DIV3") || !stricmp(comp, "DIV4")) {
 //		GF_LOG(GF_LOG_ERROR, GF_LOG_CONTAINER, ("[AVIDmx] Video format %s not compliant with MPEG-4 Visual - please recompress the file first\n", comp));
 		codecid = GF_CODECID_MSPEG4_V3;
