@@ -115,6 +115,19 @@ static void avidmx_setup(GF_Filter *filter, GF_AVIDmxCtx *ctx)
 	} else if ( !stricmp(comp, "avc1") ) {
 		codecid = GF_CODECID_AVC;
 		unframed = GF_FALSE;
+	} else if ( !stricmp(comp, "MJPG")	/*Motion JPEG, the usual fourcc*/
+		|| !stricmp(comp, "AVRn")		/*Avid*/
+		|| !stricmp(comp, "dmb1")		/*Matrox/DV bridge*/
+		|| !stricmp(comp, "JPGL")		/*Pegasus lossless-ish*/
+		|| !stricmp(comp, "jpeg")		/*some writers use the MOV fourcc*/
+	) {
+		/*Motion JPEG is one complete JPEG per AVI chunk, so it is already
+		framed; signalling it as GF_CODECID_JPEG is what lets jpegdec - which
+		is a chain link, not a whole-file decoder - pick the pid up. Without
+		this the fourcc goes through gf_4cc_parse below and nothing in the
+		graph recognises it: the JPEGs traverse the session undecoded.*/
+		codecid = GF_CODECID_JPEG;
+		unframed = GF_FALSE;
 	} else if (!stricmp(comp, "DIV3") || !stricmp(comp, "DIV4")) {
 //		GF_LOG(GF_LOG_ERROR, GF_LOG_CONTAINER, ("[AVIDmx] Video format %s not compliant with MPEG-4 Visual - please recompress the file first\n", comp));
 		codecid = GF_CODECID_MSPEG4_V3;
@@ -377,8 +390,15 @@ GF_Err avidmx_configure_pid(GF_Filter *filter, GF_FilterPid *pid, Bool is_remove
 		gf_filter_pid_send_event(ctx->ipid, &fevt);
 	}
 
+	/* Bevara: on a HTTP source the local path only appears once the transfer is
+	 * over, in reply to the PLAY_HINT above. Refusing here blacklisted this
+	 * demuxer before the source had a chance to answer, and reading a path
+	 * published mid-transfer made AVI_open_input_file fail with "GFIO object
+	 * on blob corrupted or in transfer". Accept the connection and read the
+	 * property again when actually opening - avidmx_process only opens once
+	 * the input stream is complete anyway. */
 	p = gf_filter_pid_get_property(ctx->ipid, GF_PROP_PID_FILEPATH);
-	if (!p) return GF_NOT_SUPPORTED;
+	if (!p) return GF_OK;
 
 	if (ctx->src_url && !strcmp(ctx->src_url, p->value.string)) return GF_OK;
 
@@ -488,6 +508,16 @@ GF_Err avidmx_process(GF_Filter *filter)
 
 		if (!end) {
 			return GF_OK;
+		}
+		//Bevara: the path may only have been published now that the download is
+		//complete - see the comment in avidmx_configure_pid
+		if (!ctx->src_url) {
+			const GF_PropertyValue *fp = gf_filter_pid_get_property(ctx->ipid, GF_PROP_PID_FILEPATH);
+			if (!fp) {
+				GF_LOG(GF_LOG_ERROR, GF_LOG_MEDIA, ("[AVIDmx] No local file for source, cannot demultiplex\n"));
+				return GF_NOT_SUPPORTED;
+			}
+			ctx->src_url = fp->value.string;
 		}
 		ctx->avi = AVI_open_input_file((char *)ctx->src_url, 1);
 		if (!ctx->avi) {
@@ -702,8 +732,11 @@ static const GF_FilterCapability AVIDmxCaps[] =
 	CAP_UINT(GF_CAPS_INPUT, GF_PROP_PID_STREAM_TYPE, GF_STREAM_FILE),
 	CAP_STRING(GF_CAPS_INPUT, GF_PROP_PID_FILE_EXT, "avi"),
 	CAP_STRING(GF_CAPS_INPUT, GF_PROP_PID_MIME, "video/avi|video/x-avi"),
-	//we need a file for this demuxer
-	CAP_STRING(GF_CAPS_INPUT, GF_PROP_PID_FILEPATH, "*"),
+	//Bevara: this demuxer needs a local file, but over HTTP the path only shows
+	//up once the download completes. Declaring it as an input capability made
+	//gf_filter_pid_check_caps reject the connection before the source could
+	//answer the PLAY_HINT below, so the demuxer was blacklisted. We wait for
+	//the path ourselves instead - see avidmx_configure_pid and avidmx_process.
 	CAP_UINT(GF_CAPS_OUTPUT, GF_PROP_PID_STREAM_TYPE, GF_STREAM_AUDIO),
 	CAP_UINT(GF_CAPS_OUTPUT, GF_PROP_PID_STREAM_TYPE, GF_STREAM_VISUAL),
 };
