@@ -143,6 +143,9 @@ static void avidmx_setup(GF_Filter *filter, GF_AVIDmxCtx *ctx)
 	) {
 		codecid = GF_CODECID_H263;
 		unframed = GF_FALSE;
+	} else if ( !stricmp(comp, "FFV1") ) {
+		codecid = GF_CODECID_FFV1;
+		unframed = GF_FALSE;
 	} else if (!stricmp(comp, "DIV3") || !stricmp(comp, "DIV4")) {
 //		GF_LOG(GF_LOG_ERROR, GF_LOG_CONTAINER, ("[AVIDmx] Video format %s not compliant with MPEG-4 Visual - please recompress the file first\n", comp));
 		codecid = GF_CODECID_MSPEG4_V3;
