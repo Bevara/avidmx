@@ -11,5 +11,6 @@
         "avidmx" : "dmx_avi.c"
     },
     "Format":	["AVI"],
-    "licence_required":false
+    "licence_required":false,
+    "using": ["solver_1"]
 }
