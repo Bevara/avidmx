@@ -12,5 +12,17 @@
     },
     "Format":	["AVI"],
     "licence_required":false,
-    "using": ["solver_1"]
+    "using": ["solver_1"],
+    "runtime": {
+        "avidmx": {
+            "outputs": [
+                {
+                    "property": "GF_PROP_PID_PIXFMT",
+                    "format": [
+                        "GF_PIXEL_BGR"
+                    ]
+                }
+            ]
+        }
+    }
 }
