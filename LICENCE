@@ -2,7 +2,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 
 avidmx - AVI demultiplexer accessor
 
-This accessor is a combined work: its filter sources come from GPAC, Copyright (c) Telecom Paris, under LGPL-2.1-or-later, adapted by Bevara (Copyright (c) 2026 Bevara); avilib (GPAC) under the same licence.
+This accessor is a combined work: its filter sources come from GPAC, Copyright (c) Telecom Paris, under LGPL-2.1-or-later, adapted by Bevara Technologies, LLC (Copyright (c) 2026 Bevara Technologies, LLC); avilib (GPAC) under the same licence.
 
 The texts of these licences follow.
 
