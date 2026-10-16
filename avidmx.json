@@ -1,5 +1,6 @@
 {
     "name": "avidmx",
+    "version": "1.0.1",
     "description": "AVI demultiplexer",
     "filters":["avidmx"],
     "help": "This filter demultiplexes AVI.",
