@@ -11,7 +11,6 @@
         "avidmx" : "dmx_avi.c"
     },
     "Format":	["AVI"],
-    "licence_required":false,
     "using": ["solver_1"],
     "runtime": {
         "avidmx": {
@@ -24,5 +23,10 @@
                 }
             ]
         }
+    },
+    "patents": {
+        "status": "royalty-free",
+        "note": "AVI container",
+        "checked": "2026-10-16"
     }
 }
