@@ -1,6 +1,6 @@
 {
     "name": "avidmx",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "AVI demultiplexer",
     "filters":["avidmx"],
     "help": "This filter demultiplexes AVI.",
@@ -12,7 +12,7 @@
         "avidmx" : "dmx_avi.c"
     },
     "Format":	["AVI"],
-    "using": ["solver_1"],
+    "using": ["mm_solver_1.0.1"],
     "runtime": {
         "avidmx": {
             "outputs": [
